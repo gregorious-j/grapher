@@ -1,1 +1,1 @@
-# Function grapher in JavasScript
+# Function grapher in JavaScript
