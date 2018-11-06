@@ -3,7 +3,7 @@
 let offsetX = 400;
 let offsetY = 400;
 let mapFactor = 1;
-var zoom, zoomReset, a, b, c, xydisplay;
+var zoom, showSolutions, zoomReset, a, b, c, xydisplay;
 
 
 function setup() {
@@ -21,9 +21,11 @@ function setup() {
 
 function draw() {
     
-
+    if (zoom.value() == 0) {
+        zoom.value(1);
+    }
     
-    background(255);
+    background(250);
     
     strokeWeight(1);
     fill('blue');
@@ -89,8 +91,29 @@ function drawGraphs() {
             strokeWeight(1);
             stroke(100);
             fill(100);
-            text('y-int ' + -zeroY2/zoom.value(), 5, zeroY2-10);
-
+            text('y-int ' + roundNum(-zeroY2/zoom.value(), 3), 5, zeroY2-10);
+            if (showSolutions.checked() == true) {
+                var solution2X1 = QuadFormPos(a2.value()/zoom.value(), b2.value(), -c2.value()*zoom.value());
+                //console.log(QuadFormPos(a.value(), b.value(), c.value()));
+                strokeWeight(5);
+                stroke(0);
+                point(-solution2X1, 0);
+                strokeWeight(1);
+                stroke(100);
+                fill(100);
+                
+                text('Solution: ' + roundNum(-solution2X1/zoom.value(), 3), -solution2X1-80, -10);
+            
+                var solution2X2 = QuadFormNeg(a2.value()/zoom.value(), b2.value(), -c2.value()*zoom.value());
+                strokeWeight(5);
+                stroke(255, 100, 0);
+                point(-solution2X2, 0);
+                strokeWeight(1);
+                stroke(100);
+                fill(100);
+                //console.log(solution1X2);
+                text('Solution: ' + roundNum(-solution2X2/zoom.value(), 3), -solution2X2-80, -10);
+                }
 
     }
     var zeroY = Calc(0, a.value()/zoom.value(), b.value(), c.value()*zoom.value());
@@ -102,22 +125,57 @@ function drawGraphs() {
     stroke(100);
     fill(100);
     
-    text('y-int ' + -zeroY/zoom.value(), 5, zeroY-10);
+    text('y-int ' + roundNum(-zeroY/zoom.value(), 3), 5, zeroY-10);
+    if (showSolutions.checked() == true) {
+    var solution1X1 = QuadFormPos(a.value()/zoom.value(), b.value(), -c.value()*zoom.value());
+    //console.log(QuadFormPos(a.value(), b.value(), c.value()));
+    strokeWeight(5);
+    stroke(255, 0, 255);
+    point(-solution1X1, 0);
+    strokeWeight(1);
+    stroke(100);
+    fill(100);
+    
+    text('Solution: ' + roundNum(-solution1X1/zoom.value(), 3), -solution1X1-80, -10);
+
+    var solution1X2 = QuadFormNeg(a.value()/zoom.value(), b.value(), -c.value()*zoom.value());
+    strokeWeight(5);
+    stroke(255, 100, 0);
+    point(-solution1X2, 0);
+    strokeWeight(1);
+    stroke(100);
+    fill(100);
+    //console.log(solution1X2);
+    text('Solution: ' + roundNum(-solution1X2/zoom.value(), 3), -solution1X2-80, -10);
+    }
+}
+
+function QuadFormPos(a, b, c) {
+    return((b - sqrt(b*b + 4*a*c))/(2*a));
+    
+}
+function QuadFormNeg(a, b, c) {
+    return((-b + sqrt(b*b + 4*a*c))/(2*a));
+    
 }
 
 
 //Creates HTML Elements
 
 function setupInputs1() {
-    zoom = createSlider(1, 400, 100, 1);
+    zoom = createSlider(0, 400, 100, 2);
     zoom.position(20,90);
     zoom.style('width', '200px');
+    
     zoomP = createP('');
     zoomP.position(25, 95);
     
     zoomReset = createButton('Reset');
     zoomReset.position(230, 90);
     zoomReset.mousePressed(resetZoom());
+
+    showSolutions = createCheckbox('Show solutions', false);
+    showSolutions.position(1180-200, 100);
     
     
     var off = 200;
