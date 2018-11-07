@@ -34,12 +34,12 @@ function draw() {
     stroke('blue');
     
     
-    text('equation y = ' + a.value() + 'x' + '^2' + ' + ' +  b.value()  + 'x ' + '+ ' + c.value(), width-250, 30);
+    text('equation y = ' + a.value() + 'x' + '^2' + ' + ' +  b.value()  + 'x ' + '+ ' + c.value(), width-260, 30);
     //console.log(zoom.value());    
     if(graph2.checked() == true) {
         stroke('red');
         fill('red');
-        text('equation y = ' + a2.value() + 'x' + '^2' + ' + ' +  b2.value()  + 'x ' + '+ ' + c2.value(), width-250, 55);
+        text('equation y = ' + a2.value() + 'x' + '^2' + ' + ' +  b2.value()  + 'x ' + '+ ' + c2.value(), width-260, 55);
     }
     
     noFill();
@@ -49,7 +49,7 @@ function draw() {
     coolMouse();
     
     
-    zoomP.html('Zoom: ' + zoom.value());
+    zoomP.html('Scale: ' + zoom.value());
     //zoomReset.mouseIsPressed(zoom.value(100));
     
 
@@ -127,43 +127,48 @@ function drawGraphs() {
     
     text('y-int ' + roundNum(-zeroY/zoom.value(), 3), 5, zeroY-10);
     if (showSolutions.checked() == true) {
-    var solution1X1 = QuadFormPos(a.value()/zoom.value(), b.value(), -c.value()*zoom.value());
+    var solution1X1 = QuadFormPos(a.value(), b.value(), c.value());
     //console.log(QuadFormPos(a.value(), b.value(), c.value()));
     strokeWeight(5);
     stroke(255, 0, 255);
-    point(-solution1X1, 0);
+    point(solution1X1*zoom.value(), 0);
     strokeWeight(1);
-    stroke(100);
-    fill(100);
-    
-    text('Solution: ' + roundNum(-solution1X1/zoom.value(), 3), -solution1X1-80, -10);
+    staticDisplay(0, 255, 0, 255, 'Solution: (' + roundNum(solution1X1,2) + ', ' + '0)');
 
-    var solution1X2 = QuadFormNeg(a.value()/zoom.value(), b.value(), -c.value()*zoom.value());
+    var solution1X2 = QuadFormNeg(a.value(), b.value(), c.value());
     strokeWeight(5);
     stroke(255, 100, 0);
-    point(-solution1X2, 0);
+    point(solution1X2*zoom.value(), 0);
     strokeWeight(1);
-    stroke(100);
-    fill(100);
-    //console.log(solution1X2);
-    text('Solution: ' + roundNum(-solution1X2/zoom.value(), 3), -solution1X2-80, -10);
+    staticDisplay(-30, 255, 100, 0, 'Solution: (' + roundNum(solution1X2,2) + ', ' + '0)');
     }
 }
 
 function QuadFormPos(a, b, c) {
-    return((b - sqrt(b*b + 4*a*c))/(2*a));
+    return((-b + sqrt(b*b - 4*a*c))/(2*a));
     
 }
 function QuadFormNeg(a, b, c) {
-    return((-b + sqrt(b*b + 4*a*c))/(2*a));
+    return((-b - sqrt(b*b - 4*a*c))/(2*a));
     
+}
+
+function staticDisplay(yoffset, r, g, b, textb) {
+    fill(r, g, b);
+    //console.log(solution1X2);
+    ellipse(675-offsetX, 695-offsetY+yoffset, 15);
+    rectMode(CENTER);
+    rect(825-offsetX, 694.5-offsetY+yoffset, 300, 15);
+    fill(0);
+    stroke(0);
+    text(textb, 675-offsetX, 700-offsetY+yoffset);
 }
 
 
 //Creates HTML Elements
 
 function setupInputs1() {
-    zoom = createSlider(0, 400, 100, 2);
+    zoom = createSlider(0, 400, 20, 2);
     zoom.position(20,80);
     zoom.style('width', '200px');
     
@@ -172,7 +177,7 @@ function setupInputs1() {
     
     zoomReset = createButton('Reset');
     zoomReset.position(230, 80);
-    zoomReset.mousePressed(resetZoom());
+    //zoomReset.mousePressed(resetZoom());
 
     showSolutions = createCheckbox('Show solutions', false);
     showSolutions.position(1180-200, 100);
@@ -238,15 +243,13 @@ function setupInputs2() {
 
 } 
 
-function resetZoom() {
-    if (zoom.value() != 100) {
-        zoom.value(100);
-    }
-}
+
 
 function mouseWheel(event) {
-    console.log(event.delta);
+    //console.log(event.delta);
+    
     zoom.value(-event.delta/2 + zoom.value());
+
 }
 
 //Calculates equation
