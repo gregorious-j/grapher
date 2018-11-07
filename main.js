@@ -164,14 +164,14 @@ function QuadFormNeg(a, b, c) {
 
 function setupInputs1() {
     zoom = createSlider(0, 400, 100, 2);
-    zoom.position(20,90);
+    zoom.position(20,80);
     zoom.style('width', '200px');
     
     zoomP = createP('');
-    zoomP.position(25, 95);
+    zoomP.position(25, 85);
     
     zoomReset = createButton('Reset');
-    zoomReset.position(230, 90);
+    zoomReset.position(230, 80);
     zoomReset.mousePressed(resetZoom());
 
     showSolutions = createCheckbox('Show solutions', false);
@@ -242,6 +242,11 @@ function resetZoom() {
     if (zoom.value() != 100) {
         zoom.value(100);
     }
+}
+
+function mouseWheel(event) {
+    console.log(event.delta);
+    zoom.value(-event.delta/2 + zoom.value());
 }
 
 //Calculates equation
