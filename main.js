@@ -4,7 +4,7 @@ let offsetX = 400;
 let offsetY = 400;
 let mapFactor = 1;
 var zoom, showSolutions, zoomReset, a, b, c, xydisplay;
-
+let atext, atext2, btext, btext2, ctext, ctext2;
 
 function setup() {
     createCanvas(800, 800);
@@ -62,108 +62,6 @@ function doubleClicked() {
     }
 }
 
-function drawGraphs() {
-    
-    stroke('blue');
-    strokeWeight(2);
-    beginShape();
-    for (x = -width; x < width; x++) {
-        noFill();
-        vertex(x, Calc(x, a.value()/zoom.value(), b.value(), c.value()*zoom.value()));
-        //console.log(Calc(x));
-    }
-    endShape();
-    if (graph2.checked() == true) {
-        stroke('red');
-        beginShape();
-        for (x = -width; x < width; x++) {
-            noFill();
-            vertex(x, Calc(x, a2.value()/zoom.value(), b2.value(), c2.value()*zoom.value()));
-            
-           
-            //console.log(Calc(x));
-        }
-        endShape();
-        var zeroY2 = Calc(0, a2.value()/zoom.value(), b2.value(), c2.value()*zoom.value());
-            stroke(0, 255, 10);
-            strokeWeight(5);
-            point(0, zeroY2);
-            strokeWeight(1);
-            stroke(100);
-            fill(100);
-            text('y-int ' + roundNum(-zeroY2/zoom.value(), 3), 5, zeroY2-10);
-            if (showSolutions.checked() == true) {
-                var solution2X1 = QuadFormPos(a2.value()/zoom.value(), b2.value(), -c2.value()*zoom.value());
-                //console.log(QuadFormPos(a.value(), b.value(), c.value()));
-                strokeWeight(5);
-                stroke(0);
-                point(-solution2X1, 0);
-                strokeWeight(1);
-                stroke(100);
-                fill(100);
-                
-                text('Solution: ' + roundNum(-solution2X1/zoom.value(), 3), -solution2X1-80, -10);
-            
-                var solution2X2 = QuadFormNeg(a2.value()/zoom.value(), b2.value(), -c2.value()*zoom.value());
-                strokeWeight(5);
-                stroke(255, 100, 0);
-                point(-solution2X2, 0);
-                strokeWeight(1);
-                stroke(100);
-                fill(100);
-                //console.log(solution1X2);
-                text('Solution: ' + roundNum(-solution2X2/zoom.value(), 3), -solution2X2-80, -10);
-                }
-
-    }
-    var zeroY = Calc(0, a.value()/zoom.value(), b.value(), c.value()*zoom.value());
-    
-    strokeWeight(5);
-    stroke(0, 255, 10);
-    point(0, zeroY);
-    strokeWeight(1);
-    stroke(100);
-    fill(100);
-    
-    text('y-int ' + roundNum(-zeroY/zoom.value(), 3), 5, zeroY-10);
-    if (showSolutions.checked() == true) {
-    var solution1X1 = QuadFormPos(a.value(), b.value(), c.value());
-    //console.log(QuadFormPos(a.value(), b.value(), c.value()));
-    strokeWeight(5);
-    stroke(255, 0, 255);
-    point(solution1X1*zoom.value(), 0);
-    strokeWeight(1);
-    staticDisplay(0, 255, 0, 255, 'Solution: (' + roundNum(solution1X1,2) + ', ' + '0)');
-
-    var solution1X2 = QuadFormNeg(a.value(), b.value(), c.value());
-    strokeWeight(5);
-    stroke(255, 100, 0);
-    point(solution1X2*zoom.value(), 0);
-    strokeWeight(1);
-    staticDisplay(-30, 255, 100, 0, 'Solution: (' + roundNum(solution1X2,2) + ', ' + '0)');
-    }
-}
-
-function QuadFormPos(a, b, c) {
-    return((-b + sqrt(b*b - 4*a*c))/(2*a));
-    
-}
-function QuadFormNeg(a, b, c) {
-    return((-b - sqrt(b*b - 4*a*c))/(2*a));
-    
-}
-
-function staticDisplay(yoffset, r, g, b, textb) {
-    fill(r, g, b);
-    //console.log(solution1X2);
-    ellipse(675-offsetX, 695-offsetY+yoffset, 15);
-    rectMode(CENTER);
-    rect(825-offsetX, 694.5-offsetY+yoffset, 300, 15);
-    fill(0);
-    stroke(0);
-    text(textb, 675-offsetX, 700-offsetY+yoffset);
-}
-
 
 //Creates HTML Elements
 
@@ -181,6 +79,8 @@ function setupInputs1() {
 
     showSolutions = createCheckbox('Show solutions', false);
     showSolutions.position(1180-200, 100);
+    showVertex = createCheckbox('Show vertex', false);
+    showVertex.position(1180-200, 115);
     
     
     var off = 200;
@@ -252,45 +152,11 @@ function mouseWheel(event) {
 
 }
 
-//Calculates equation
 
-function Calc(x, av, bv, cv) {
-   // av = a.value()/zoom.value();
-   // bv = b.value();
-   // cv = c.value()*zoom.value();
-    
-    return(-(av*x*x) - bv*x - cv);
-        
-}
 
 //Cross and (x, y) coordinate
 
-function coolMouse() {
-    var textX = roundNum((mouseX - offsetX)/zoom.value(), 1);
-    var textY = roundNum((mouseY - offsetY)/zoom.value(), 1);
 
-    fill(0);
-    if (xydisplay.checked() == true) {
-        strokeWeight(1);
-        stroke(0);
-        cursor(CROSS);
-        translate(-offsetX, -offsetY);
-        text('('+ textX + ', ' + -textY + ')', mouseX-80, mouseY-20);
-
-    } else {
-        cursor();
-        translate(-offsetX, -offsetY);
-        strokeWeight(1);
-        stroke(0);
-        text('('+ textX + ', ' + -textY + ')', 20, 80);
-    }
-    
-    
-    //if (mouseIsClicked) {
-    //point(mouseX, mouseY);
-    //}
-
-}
 
 
 
@@ -326,8 +192,6 @@ function drawGrid() {
    
 }
 
-function roundNum(value, decimals) {
-    return Number(Math.round(value+'e'+decimals)+'e-'+decimals);
-  }
+
   
 
