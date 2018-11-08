@@ -79,7 +79,7 @@ function setupInputs1() {
 
     showSolutions = createCheckbox('Show solutions', false);
     showSolutions.position(1180-200, 100);
-    showVertex = createCheckbox('Show vertex', false);
+    showVertex = createCheckbox('Show vertex (first equation)', false);
     showVertex.position(1180-200, 115);
     
     
@@ -186,6 +186,10 @@ function drawGrid() {
         strokeWeight(.5);
 		text(roundNum(-y/zoom.value(), 2), 1, y+12);
     }
+    stroke(0);
+    strokeWeight(1);
+    line(0, 800, 0, -800);
+    line(-800, 0, 800, 0);
     strokeWeight(6);
   	stroke('blue');
     point(0,0);
