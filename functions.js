@@ -102,7 +102,7 @@ function drawGraphs() {
         stroke(200, 255, 17);
         point(calculateH(a.value(), b.value())*zoom.value(), -calculateK(a.value(), b.value(), c.value())*zoom.value());
         strokeWeight(1);
-        staticDisplay(90, 200, 255, 17, 'Vertex: (' + calculateH(a.value(), b.value()) + ', ' + calculateK(a.value(), b.value(), c.value()) + ')');
+        staticDisplay(90, 200, 255, 17, 'Vertex: (' + roundNum(calculateH(a.value(), b.value()), 1) + ', ' + roundNum(calculateK(a.value(), b.value(), c.value()), 1) + ')');
     }
 
 }
