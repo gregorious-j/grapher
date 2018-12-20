@@ -20,65 +20,27 @@ function calculateK(a, b, c) {
 //draws the lines
 
 function drawGraphs() {
-    
-    
     stroke('blue');
     strokeWeight(2);
+
+
     beginShape();
-    for (x = -width; x < width; x++) {
+    for (x = -width*1.5; x < width*1.5; x++) {
         noFill();
-        vertex(x, Calc(x, a.value()/zoom.value(), b.value(), c.value()*zoom.value()));
-        //console.log(Calc(x));
+        vertex(x*zoomLevel, Calc(x, a.value()/zoom.value(), b.value(), c.value()*zoom.value())*zoomLevel);
     }
     endShape();
-    if (graph2.checked() == true) {
-        stroke('red');
-        beginShape();
-        for (x = -width; x < width; x++) {
-            noFill();
-            vertex(x, Calc(x, a2.value()/zoom.value(), b2.value(), c2.value()*zoom.value()));
-            
-           
-            //console.log(Calc(x));
-        }
-        endShape();
-        var zeroY2 = Calc(0, a2.value()/zoom.value(), b2.value(), c2.value()*zoom.value());
-            stroke(100, 100, 100);
-            strokeWeight(5);
-            point(0, zeroY2);
-            strokeWeight(1);
-            stroke(100);
-            fill(100);
-            text('y-int ' + roundNum(-zeroY2/zoom.value(), 3), 5, zeroY2-10);
-            if (showSolutions.checked() == true) {
-                let solution2X1 = QuadFormPos(a2.value(), b2.value(), c2.value());
-                //console.log(QuadFormPos(a.value(), b.value(), c.value()));
-                strokeWeight(7);
-                stroke(255, 255, 0);
-                point(solution2X1*zoom.value(), 0);
-                strokeWeight(1);
-                staticDisplay(60, 255, 255, 0, 'Solution: (' + roundNum(solution2X1, 2) + ', ' + '0)');
-            
-                let solution2X2 = QuadFormNeg(a2.value(), b2.value(), c2.value());
-                strokeWeight(7);
-                stroke(0, 255, 255);
-                point(solution2X2*zoom.value(), 0);
-                strokeWeight(1);
-                staticDisplay(30, 0, 255, 255, 'Solution: (' + roundNum(solution2X2, 2) + ', ' + '0)');
-                }
-
-    }
+    
 
     var zeroY = Calc(0, a.value()/zoom.value(), b.value(), c.value()*zoom.value());
-    
     strokeWeight(5);
     stroke(100, 100, 100);
-    point(0, zeroY);
+    point(0, zeroY*zoomLevel);
     strokeWeight(1);
     stroke(100);
     fill(100);
     
-    text('y-int ' + roundNum(-zeroY/zoom.value(), 3), 5, zeroY-10);
+    text('y-int ' + roundNum(-zeroY/zoom.value(), 3), 5, (zeroY*zoomLevel)-10);
 
 
 
@@ -86,23 +48,66 @@ function drawGraphs() {
         var solution1X1 = QuadFormPos(a.value(), b.value(), c.value());
         strokeWeight(7);
         stroke(255, 0, 255);
-        point(solution1X1*zoom.value(), 0);
+        point(solution1X1*zoom.value()*zoomLevel, 0);
         strokeWeight(1);
         staticDisplay(0, 255, 0, 255, 'Solution: (' + roundNum(solution1X1,2) + ', ' + '0)');
 
         var solution1X2 = QuadFormNeg(a.value(), b.value(), c.value());
         strokeWeight(7);
         stroke(255, 100, 0);
-        point(solution1X2*zoom.value(), 0);
+        point(solution1X2*zoom.value()*zoomLevel, 0);
         strokeWeight(1);
         staticDisplay(-30, 255, 100, 0, 'Solution: (' + roundNum(solution1X2,2) + ', ' + '0)');
     }
     if (showVertex.checked() == true) {
         strokeWeight(7);
         stroke(200, 255, 17);
-        point(calculateH(a.value(), b.value())*zoom.value(), -calculateK(a.value(), b.value(), c.value())*zoom.value());
+        point(calculateH(a.value(), b.value())*zoom.value()*zoomLevel, -calculateK(a.value(), b.value(), c.value())*zoom.value()*zoomLevel);
         strokeWeight(1);
         staticDisplay(90, 200, 255, 17, 'Vertex: (' + roundNum(calculateH(a.value(), b.value()), 1) + ', ' + roundNum(calculateK(a.value(), b.value(), c.value()), 1) + ')');
+    }
+
+    //     GRAPH #2
+
+    if (graph2.checked() == true) {
+        stroke('red');
+        strokeWeight(2);
+
+        beginShape();
+        for (x = -width*1.5; x < width*1.5; x++) {
+            noFill();
+            vertex(x*zoomLevel, Calc(x, a2.value()/zoom.value(), b2.value(), c2.value()*zoom.value())*zoomLevel);
+        }
+        endShape();
+
+
+        var zeroY2 = Calc(0, a2.value()/zoom.value(), b2.value(), c2.value()*zoom.value());
+        stroke(100, 100, 100);
+        strokeWeight(5);
+        point(0, zeroY2*zoomLevel);
+        strokeWeight(1);
+        stroke(100);
+        fill(100);
+        text('y-int ' + roundNum(-zeroY2/zoom.value(), 3), 5, (zeroY2*zoomLevel)-10);
+
+
+        if (showSolutions.checked() == true) {
+            let solution2X1 = QuadFormPos(a2.value(), b2.value(), c2.value());
+            //console.log(QuadFormPos(a.value(), b.value(), c.value()));
+            strokeWeight(7);
+            stroke(255, 255, 0);
+            point(solution2X1*zoom.value()*zoomLevel, 0);
+            strokeWeight(1);
+            staticDisplay(60, 255, 255, 0, 'Solution: (' + roundNum(solution2X1, 2) + ', ' + '0)');
+            
+            let solution2X2 = QuadFormNeg(a2.value(), b2.value(), c2.value());
+            strokeWeight(7);
+            stroke(0, 255, 255);
+            point(solution2X2*zoom.value()*zoomLevel, 0);
+            strokeWeight(1);
+            staticDisplay(30, 0, 255, 255, 'Solution: (' + roundNum(solution2X2, 2) + ', ' + '0)');
+            }
+
     }
 
 }
@@ -139,8 +144,8 @@ function Calc(x, av, bv, cv) {
  }
 
  function coolMouse() {
-    var textX = roundNum((mouseX - offsetX)/zoom.value(), 1);
-    var textY = roundNum((mouseY - offsetY)/zoom.value(), 1);
+    var textX = roundNum(((mouseX - offsetX)/zoom.value())/zoomLevel, 1);
+    var textY = roundNum(((mouseY - offsetY)/zoom.value())/zoomLevel, 1);
 
     fill(0);
     if (xydisplay.checked() == true) {
@@ -156,6 +161,9 @@ function Calc(x, av, bv, cv) {
         strokeWeight(1);
         stroke(0);
         text('('+ textX + ', ' + -textY + ')', 20, 80);
+    }
+    if (mouseIsDown) {
+        cursor(MOVE);
     }
     
     
