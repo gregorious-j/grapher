@@ -5,6 +5,13 @@ let offsetY = 400;
 let mapFactor = 1;
 var zoom, showSolutions, zoomReset, a, b, c, xydisplay;
 let atext, atext2, btext, btext2, ctext, ctext2;
+let mouseIsDown = false;
+
+let startX, startY;
+let netPanningX = 0, netPanningY = 0;
+
+let zoomLevel = 1; 
+let doDrawGraph = false;
 
 function setup() {
     createCanvas(800, 800);
@@ -23,7 +30,8 @@ function draw() {
     
     if (zoom.value() == 0) {
         zoom.value(1);
-    }
+    } 
+
     
     background(250);
     
@@ -43,9 +51,12 @@ function draw() {
     }
     
     noFill();
+    
     translate(offsetX, offsetY);
     drawGrid();
+    if (doDrawGraph) {
     drawGraphs();
+    }
     coolMouse();
     
     
@@ -53,28 +64,88 @@ function draw() {
     //zoomReset.mouseIsPressed(zoom.value(100));
     
 
-    
 }
-function doubleClicked() {
-    if (mouseX <= width && mouseY >= 0) {
-    offsetX = ((400 - mouseX) + offsetX);
-    offsetY = ((400 - mouseY) + offsetY);
+
+function graphBttn() {
+    if (!doDrawGraph) {
+    doDrawGraph = true;
+    } else {
+        doDrawGraph = false;
     }
 }
+
+function zoomOut() {
+    if(zoomLevel <= .5) {
+        zoomLevel -= .1;
+
+    } else if (zoomLevel <= .01) {
+        zoomLevel = .4;
+    } else {
+        zoomLevel -= .5;
+    }
+    //console.log(zoomLevel);
+}
+function zoomIn() {
+    if (zoomLevel < .5) {
+        zoomLevel += .1;
+    } else {
+    zoomLevel += .5;
+    }
+    
+}
+
+function mousePressed() {
+    startX = mouseX;
+    startY = mouseY;
+    mouseIsDown = true;
+    
+}
+
+function mouseReleased() {
+    mouseIsDown = false;
+}
+
+
+
+function mouseDragged() {
+    if (mouseIsDown) {
+        if (mouseX <= width && mouseY >= 60) {
+            
+            dx = mouseX - startX;
+            dy = mouseY - startY;
+
+            startX = mouseX;
+            startY = mouseY;
+
+            netPanningX+=dx;
+            netPanningY+=dy;
+
+            offsetX = netPanningX; 
+            offsetY = netPanningY;
+            //console.log(netPanningX, -netPanningY);
+            
+            //offsetY = mouseY - delta[1];
+            //console.log(delta, offsetX, offsetY);
+
+        }
+    }
+}
+
+ 
+
 
 
 //Creates HTML Elements
 
 function setupInputs1() {
-    zoom = createSlider(0, 400, 20, 2);
+    zoom = createSlider(0, 400, 100, 2);
     zoom.position(20,80);
     zoom.style('width', '200px');
     
     zoomP = createP('');
     zoomP.position(25, 85);
     
-    zoomReset = createButton('Reset');
-    zoomReset.position(230, 80);
+    
     //zoomReset.mousePressed(resetZoom());
 
     showSolutions = createCheckbox('Show solutions', false);
@@ -143,7 +214,9 @@ function setupInputs2() {
 
 } 
 
-
+function resetZoom() {
+    zoom.value(100);
+}
 
 function mouseWheel(event) {
     //console.log(event.delta);
@@ -174,22 +247,22 @@ function drawGrid() {
     fill(0);
   
     textSize(15);
-    for (var x=-width; x < width; x+=100) {
+    for (var x=-width*10; x < width*10; x+=100*zoomLevel) {
         stroke('grey');
-        line(x, -height, x, height);
+        line(x, -height*10, x, height*10);
         strokeWeight(.5);
-		text(roundNum(x/zoom.value(), 2), x+1, 12);
+		text(roundNum((x/zoom.value())/zoomLevel, 2), x+1, 12);
 	}
-	for (var y=-height; y < height; y+=100) {
+	for (var y=-height*10; y < height*10; y+=100*zoomLevel) {
         stroke('grey');
-        line(-width, y, width, y);
+        line(-width*10, y, width*10, y);
         strokeWeight(.5);
-		text(roundNum(-y/zoom.value(), 2), 1, y+12);
+		text(roundNum((-y/zoom.value())/zoomLevel, 2), 1, y+12);
     }
     stroke(0);
     strokeWeight(1);
-    line(0, 800, 0, -800);
-    line(-800, 0, 800, 0);
+    line(0, height*10, 0, -height*10);
+    line(-width*10, 0, width*10, 0);
     strokeWeight(6);
   	stroke('blue');
     point(0,0);
